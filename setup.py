@@ -13,6 +13,10 @@ class Setup:
         self.appdata = os.path.join(self.roaming, "AspectRatioChecker")
         self.save_address = os.path.join(self.appdata, "preferences.pkl")
         self.menu_location = os.path.join(self.roaming, "Microsoft\Windows\SendTo")
+        
+        self.mobile = "arc-mobile.py"
+        self.cmd = "AspectRatioChecker.cmd"
+        self.org = "arc.py"
 
         try:
             self.load()
@@ -20,19 +24,23 @@ class Setup:
             self.in_menu = False
             self.editor = "C:\WINDOWS\system32\mspaint.exe"
         finally:
-            self.save()
             try:
                 if not os.path.exists(self.appdata):
                     os.mkdir(self.appdata)
-                    exe = os.path.join(self.wd, "arc.cmd")
+                    exe = os.path.join(self.wd, self.cmd)
                     with open(exe, "w") as f:
                         f.write("@echo off\n")
                         f.write("cls\n")
-                        f.write("python " + os.path.join(self.appdata, "arc.py") + " %1\n")
-                    for file in ["arc.cmd", "arc.py"]:
+                        f.write("python " + os.path.join(self.appdata, self.mobile) + " %1\n")
+                    for file in [self.cmd, self.org]:
                         src = os.path.join(self.wd, file)
                         shutil.move(src, self.appdata)
-                        print(src)
+                        if file == self.org:
+                            os.rename(os.path.join(self.appdata, file), os.path.join(self.appdata, self.mobile))
+                            shutil.copy(os.path.join(self.appdata, self.mobile), self.wd)
+                            os.rename(os.path.join(self.wd, self.mobile), src)
+                    self.menu_add(alert=False)
+                    self.save()
                     print("Initial setup complete.")
                     print()
             except FileNotFoundError:
@@ -60,23 +68,24 @@ class Setup:
                 pass
             print()
 
-    def menu_add(self):
+    def menu_add(self, alert=True):
 
         if self.in_menu:
             print("Already in context menu.")
         else:
-            src = os.path.join(self.appdata, "arc.cmd")
+            src = os.path.join(self.appdata, self.cmd)
             shutil.move(src, self.menu_location)
             self.in_menu = True
-            print("Added. You may need to restart computer for changes to be applied.")
+            if alert:
+                print("Added.")
 
     def menu_remove(self):
 
         if self.in_menu:
-            f = os.path.join(self.menu_location, "arc.cmd")
+            f = os.path.join(self.menu_location, self.cmd)
             shutil.move(f, self.appdata)
             self.in_menu = False
-            print("Removed. You may need to restart computer for changes to be applied.")
+            print("Removed.")
         else:
             print("Not in context menu.")
 

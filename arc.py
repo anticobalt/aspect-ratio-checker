@@ -52,7 +52,7 @@ def same_ratio(img_ratio, monitor_ratio, file):
     percent = img_ratio / monitor_ratio
     diff = int(abs(percent - 1) * 100)
     if percent > 1:
-        print("Image is " + str(diff) + "% wide for screen.")
+        print("Image is " + str(diff) + "% too wide for screen.")
         same = False
     elif percent < 1:
         print("Image is " + str(diff) + "% too narrow for screen.")
