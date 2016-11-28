@@ -52,10 +52,10 @@ def same_ratio(img_ratio, monitor_ratio, file):
     percent = img_ratio / monitor_ratio
     diff = int(abs(percent - 1) * 100)
     if percent > 1:
-        print("Image is " + str(diff) + "% too wide for screen.")
+        print("Image is " + str(diff) + "% too wide for screen. Sides must be cropped off, or top/bottom filled.")
         same = False
     elif percent < 1:
-        print("Image is " + str(diff) + "% too narrow for screen.")
+        print("Image is " + str(diff) + "% too narrow for screen. Top/bottom must be cropped off, or sides filled.")
         same = False
     else:
         print("Image is the same aspect ratio as the screen.")

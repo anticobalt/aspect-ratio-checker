@@ -15,7 +15,7 @@ class Setup:
         self.menu_location = os.path.join(self.roaming, "Microsoft\Windows\SendTo")
         
         self.mobile = "arc-mobile.py"
-        self.cmd = "AspectRatioChecker.cmd"
+        self.cmd = "AspectRatioChecker.bat"
         self.org = "arc.py"
 
         try:

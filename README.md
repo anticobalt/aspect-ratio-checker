@@ -11,17 +11,17 @@ For Windows<sup>2</sup>, and requires the Pillow module to be installed. Written
 
 ### Installation
 1. Have all source files in the same folder
-2. Run setup.py from terminal
+2. Run ARCSetup.bat
 3. Wait for confirmation of setup being complete
 4. Exit using prompt
 
 ### How to Change Preferences
-1. Run setup.py
+1. Run ARCSetup.bat
 2. Follow prompts
 3. Exit when done
 
 ### Disclaimers
 
-  <sup>1</sup> Definitely works if the monitors have the same resolution, but I'm not sure about "unique" setups, since I only have two 1920x1080 monitors to test with
+<sup>1</sup> Definitely works if the monitors have the same resolution, but I'm not sure about "unique" setups, since I only have two 1920x1080 monitors to test with
 
-  <sup>2</sup> Should work on 7/8/10; no idea about older versions
+<sup>2</sup> Should work on 7/8/10; no idea about older versions
