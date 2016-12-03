@@ -76,7 +76,7 @@ def prompt_edit(file):
 
 def get_editor():
     p = os.path.join(os.getenv('APPDATA'), "AspectRatioChecker\preferences.pkl")
-    f = open(p, "rb")
-    return pickle.load(f)[1]
+    with open(p, "rb") as f:
+        return pickle.load(f)[1]
         
 main()

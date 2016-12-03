@@ -112,13 +112,13 @@ class Setup:
     def save(self):
 
         data = (self.in_menu, self.editor)
-        f = open(self.save_address, "wb")
-        pickle.dump(data, f)
+        with open(self.save_address, "wb") as f:
+            pickle.dump(data, f)
 
     def load(self):
 
-        f = open(self.save_address, "rb")
-        self.in_menu, self.editor = pickle.load(f)
+        with open(self.save_address, "rb") as f:
+            self.in_menu, self.editor = pickle.load(f)
 
 s = Setup()
 s.main()
