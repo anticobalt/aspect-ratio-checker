@@ -5,6 +5,7 @@ import ctypes
 import os
 import pickle
 
+
 def main():
     """
     :return: NoneType
@@ -20,8 +21,8 @@ def main():
 
 def get_image_ratio(file):
     """
-    :param file: str
-    :return: float
+    :param file: Str
+    :return: Float
     """
     img = Image.open(file)
     x = img.size[0]
@@ -32,7 +33,7 @@ def get_image_ratio(file):
 
 def get_monitor_ratio():
     """
-    :return: float
+    :return: Float
     """
     user = ctypes.windll.user32
     user.SetProcessDPIAware()
@@ -44,10 +45,10 @@ def get_monitor_ratio():
 
 def same_ratio(img_ratio, monitor_ratio, file):
     """
-    :param img_ratio: float
-    :param monitor_ratio: float
-    :param file: str
-    :return: bool
+    :param img_ratio: Float
+    :param monitor_ratio: Float
+    :param file: Str
+    :return: Bool
     """
     percent = img_ratio / monitor_ratio
     diff = int(abs(percent - 1) * 100)
@@ -66,7 +67,7 @@ def same_ratio(img_ratio, monitor_ratio, file):
 
 def prompt_edit(file):
     """
-    :param file: str
+    :param file: Str
     :return: NoneType
     """
     a = input("Open in image editor? Y/N ").lower()
@@ -75,6 +76,9 @@ def prompt_edit(file):
 
 
 def get_editor():
+    """
+    :return: Str
+    """
     p = os.path.join(os.getenv('APPDATA'), "AspectRatioChecker\preferences.pkl")
     with open(p, "rb") as f:
         return pickle.load(f)[1]

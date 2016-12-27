@@ -8,49 +8,52 @@ class Setup:
 
     def __init__(self):
 
-        self.wd = os.path.dirname(os.path.realpath(__file__))
-        self.roaming = os.getenv('APPDATA')
-        self.appdata = os.path.join(self.roaming, "AspectRatioChecker")
-        self.save_address = os.path.join(self.appdata, "preferences.pkl")
-        self.menu_location = os.path.join(self.roaming, "Microsoft\Windows\SendTo")
-        
-        self.mobile = "arc-mobile.py"
-        self.cmd = "AspectRatioChecker.bat"
-        self.org = "arc.py"
+        self.WORKINGDIR = os.path.dirname(os.path.realpath(__file__))
+        self.ROAMINGDIR = os.getenv('APPDATA')
+        self.APPDATADIR = os.path.join(self.ROAMINGDIR, "AspectRatioChecker")
+        self.RIGHTMENUDIR = os.path.join(self.ROAMINGDIR, "Microsoft\Windows\SendTo")
+
+        self.SAVEFILE = os.path.join(self.APPDATADIR, "preferences.pkl")
+        self.MOBILEFILE = os.path.join(self.APPDATADIR, "arc-mobile.py")
+
+        self.ORIGINALFILENAME = "arc.py"
+        self.BATCHFILENAME = "AspectRatioChecker.bat"
 
         try:
             self.load()
         except FileNotFoundError:
             self.in_menu = False
             self.editor = "C:\WINDOWS\system32\mspaint.exe"
-        finally:
-            try:
-                if not os.path.exists(self.appdata):
-                    os.mkdir(self.appdata)
-                    exe = os.path.join(self.wd, self.cmd)
-                    with open(exe, "w") as f:
-                        f.write("@echo off\n")
-                        f.write("cls\n")
-                        f.write("python " + os.path.join(self.appdata, self.mobile) + " %1\n")
-                    for file in [self.cmd, self.org]:
-                        src = os.path.join(self.wd, file)
-                        shutil.move(src, self.appdata)
-                        if file == self.org:
-                            os.rename(os.path.join(self.appdata, file), os.path.join(self.appdata, self.mobile))
-                            shutil.copy(os.path.join(self.appdata, self.mobile), self.wd)
-                            os.rename(os.path.join(self.wd, self.mobile), src)
-                    self.menu_add(alert=False)
-                    self.save()
-                    print("Initial setup complete.")
-                    print()
-            except FileNotFoundError:
-                print("Required source files missing.")
+        if self.in_menu:
+            self.batch_file = os.path.join(self.RIGHTMENUDIR, self.BATCHFILENAME)
+        else:
+            self.batch_file = os.path.join(self.APPDATADIR, self.BATCHFILENAME)
+        try:
+            if not os.path.exists(self.APPDATADIR):
+                os.mkdir(self.APPDATADIR)
+                self.handle_files()
+                self.save()
+                print("Initial setup complete.")
+                print()
+        except FileNotFoundError:
+            print("Required source files missing.")
+
+    def handle_files(self):
+
+        with open(self.batch_file, "w") as f:
+            f.write("@echo off\n")
+            f.write("cls\n")
+            f.write("python " + os.path.join(self.APPDATADIR, self.MOBILEFILE) + " %1\n")
+        src = os.path.join(self.WORKINGDIR, self.ORIGINALFILENAME)
+        shutil.copy(src, self.APPDATADIR)
+        os.rename(os.path.join(self.APPDATADIR, self.ORIGINALFILENAME), self.MOBILEFILE)
 
     def main(self):
 
         while 1:
-            options = ["Add to context menu", "Remove from context menu", "Set default editor", "Check status", "Exit"]
-            operations = [self.menu_add, self.menu_remove, self.set_editor, self.check]
+            options = ["Add to context menu", "Remove from context menu", "Set default editor", "Check status",
+                       "Update files", "Exit"]
+            operations = [self.menu_add, self.menu_remove, self.set_editor, self.check, self.update]
             num = 1
             print("Choose an option:")
             for option in options:
@@ -73,18 +76,18 @@ class Setup:
         if self.in_menu:
             print("Already in context menu.")
         else:
-            src = os.path.join(self.appdata, self.cmd)
-            shutil.move(src, self.menu_location)
+            shutil.move(self.batch_file, self.RIGHTMENUDIR)
             self.in_menu = True
+            self.batch_file = os.path.join(self.RIGHTMENUDIR, self.BATCHFILENAME)
             if alert:
                 print("Added.")
 
     def menu_remove(self):
 
         if self.in_menu:
-            f = os.path.join(self.menu_location, self.cmd)
-            shutil.move(f, self.appdata)
+            shutil.move(self.batch_file, self.APPDATADIR)
             self.in_menu = False
+            self.batch_file = os.path.join(self.APPDATADIR, self.BATCHFILENAME)
             print("Removed.")
         else:
             print("Not in context menu.")
@@ -106,19 +109,31 @@ class Setup:
 
         print("In Context Menu:", self.in_menu)
         print("Editor Location:", self.editor)
-        print("Context Menu Location:", self.menu_location)
-        print("Program Location:", self.appdata)
+        print("Context Menu Location:", self.RIGHTMENUDIR)
+        print("Program Location:", self.APPDATADIR)
 
     def save(self):
 
         data = (self.in_menu, self.editor)
-        with open(self.save_address, "wb") as f:
+        with open(self.SAVEFILE, "wb") as f:
             pickle.dump(data, f)
 
     def load(self):
 
-        with open(self.save_address, "rb") as f:
+        with open(self.SAVEFILE, "rb") as f:
             self.in_menu, self.editor = pickle.load(f)
+
+    def update(self):
+        for file in [self.MOBILEFILE, self.batch_file, self.SAVEFILE]:
+            try:
+                os.remove(file)
+            except FileNotFoundError:
+                pass
+        time.sleep(1)
+        self.handle_files()
+        self.save()
+        print("Force update of files complete. You should now be running the latest code.")
+
 
 s = Setup()
 s.main()
