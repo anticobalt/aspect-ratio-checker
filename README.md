@@ -11,5 +11,9 @@ For Windows 7/8/10. Requires the Pillow module to be installed. Written in Pytho
 
 ### Initial Setup
 1. Have all source files in the same folder
-2. Run ARCSetup.bat
+2. Run setup.bat
 3. Exit when prompted
+
+### How to Use
+![Screenshot](https://vgy.me/ogQ6pm.png)
+Run setup.bat to change preferences.
