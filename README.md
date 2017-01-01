@@ -15,5 +15,6 @@ For Windows 7/8/10. Requires the Pillow module to be installed. Written in Pytho
 3. Exit when prompted
 
 ### How to Use
-![Screenshot](https://vgy.me/ogQ6pm.png)
+![Screenshot](https://vgy.me/ogQ6pm.png) 
+
 Run setup.bat to change preferences.
