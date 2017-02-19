@@ -4,6 +4,12 @@ import os
 import shutil
 
 
+def main():
+    s = Setup()
+    s.startup()
+    s.main_loop()
+
+
 class Setup:
 
     def __init__(self):
@@ -19,15 +25,20 @@ class Setup:
         self.ORIGINALFILENAME = "arc.py"
         self.BATCHFILENAME = "AspectRatioChecker.bat"
 
+        self.in_menu = False
+        self.editor = "C:\WINDOWS\system32\mspaint.exe"
+        self.batch_file = os.path.join(self.APPDATADIR, self.BATCHFILENAME)
+
+    def startup(self):
+
         try:
             self.load()
         except FileNotFoundError:
-            self.in_menu = False
-            self.editor = "C:\WINDOWS\system32\mspaint.exe"
+            pass
+
         if self.in_menu:
             self.batch_file = os.path.join(self.RIGHTMENUDIR, self.BATCHFILENAME)
-        else:
-            self.batch_file = os.path.join(self.APPDATADIR, self.BATCHFILENAME)
+
         try:
             if not os.path.exists(self.APPDATADIR):
                 os.mkdir(self.APPDATADIR)
@@ -48,7 +59,7 @@ class Setup:
         shutil.copy(src, self.APPDATADIR)
         os.rename(os.path.join(self.APPDATADIR, self.ORIGINALFILENAME), self.MOBILEFILE)
 
-    def main(self):
+    def main_loop(self):
 
         while 1:
             options = ["Add to context menu", "Remove from context menu", "Set default editor", "Check status",
@@ -124,6 +135,7 @@ class Setup:
             self.in_menu, self.editor = pickle.load(f)
 
     def update(self):
+
         for file in [self.MOBILEFILE, self.batch_file, self.SAVEFILE]:
             try:
                 os.remove(file)
@@ -134,6 +146,4 @@ class Setup:
         self.save()
         print("Force update of files complete. You should now be running the latest code.")
 
-
-s = Setup()
-s.main()
+main()
